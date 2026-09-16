@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenidos - La Gran Revelación</title>
+    <style>
+        /* Variables de color adaptadas a la paleta de los ositos */
+        :root {
+            --text-dark: #5e503f; /* Marrón suave para combinar con los ositos */
+            --gold-accent: #dfb26c; /* Dorado para resaltar palabras clave */
+            --pink-soft: #fbeee9;
+            --blue-soft: #e8f1f5;
+        }
+
+        /* Configuración de la imagen de fondo */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('assets/index_fondo_ositos.jpg'); /* Asegúrate de guardar tu imagen aquí */
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            align-items: flex-start; /* Alinea el contenido hacia arriba para no tapar los ositos */
+            justify-content: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* Contenedor del texto con un sutil efecto translúcido blanco */
+        .welcome-card {
+            background: rgba(255, 255, 255, 0.85); /* Fondo blanco con transparencia */
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 35px 25px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(94, 80, 63, 0.15);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            margin-top: 40px; /* Separación del borde superior */
+            box-sizing: border-box;
+        }
+
+        .decorations {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            letter-spacing: 5px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* Estilo para los bloques de texto */
+        .message-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #6c5a49;
+            margin-bottom: 30px;
+        }
+
+        .message-text p {
+            margin: 15px 0;
+        }
+
+        .highlight {
+            color: var(--gold-accent);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Botón estilizado con los colores pastel de los globos */
+        .enter-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #b3e5fc, #ffccbc); /* Azul y rosa pastel */
+            color: var(--text-dark);
+            text-decoration: none;
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(94, 80, 63, 0.1);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .enter-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(94, 80, 63, 0.2);
+        }
+
+        .enter-btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Ajustes para pantallas pequeñas (Celulares) */
+        @media (max-width: 480px) {
+            .welcome-card {
+                margin-top: 20px;
+                padding: 25px 20px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .message-text {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="welcome-card">
+        <!-- Decoración superior adaptable -->
+        <div class="decorations">✨🧸✨</div>
+        
+        <h1>¡Bienvenidos a Nuestra Gran Ilusión!</h1>
+
+        <!-- Texto de agradecimiento a Dios y presentación -->
+        <div class="message-text">
+            <p>Primero que nada, queremos <span class="highlight">dar gracias a Dios</span> por bendecir nuestras vidas con el regalo más hermoso y por guiarnos en esta maravillosa etapa como padres.</p>
+            
+            <p>Nuestros corazones están llenos de emoción y queremos invitarlos a ser parte de este misterio tan dulce. ¿Será un tierno príncipe o una hermosa princesa?</p>
+            
+            <p>Acompáñennos a descubrirlo y dejen su votación.</p>
+        </div>
+
+        <!-- Enlace hacia la página principal (donde estará el contador) -->
+        <a href="principal.html" class="enter-btn">Entrar a la Revelación</a>
+    </div>
+
+</body>
+</html>
