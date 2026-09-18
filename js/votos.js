@@ -1,155 +1,249 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenidos - La Gran Revelación</title>
-    <style>
-        /* Variables de color temáticas */
-        :root {
-            --bg-night: #0b132b; /* Fondo azul noche oscuro */
-            --gold-star: #ffee93; /* Dorado suave para estrellas */
-            --pink-pastel: #ffb5a7;
-            --blue-pastel: #b3e5fc;
-            --text-light: #f8f9fa;
-        }
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwF12bPe41urhj_e6cBTRfhLpcxaOR2zdhJ-HP26f1EU_6H6OW49T1Ms0hHdYUVKk3b/exec';
+const voteForm = document.getElementById('vote-form');
+const formMessage = document.getElementById('form-message');
+const submitButton = voteForm.querySelector('button[type="submit"]');
+const nameInput = document.getElementById('voter-name');
+let voterNames = new Set();
+let currentVotes = { M: 0, F: 0 };
+let celebrationShown = false;
+let finalRevealShown = false;
 
-        /* Configuración global del fondo estrellado */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-night);
-            /* Puedes descomentar la línea de abajo si prefieres usar una imagen de fondo real */
-            /* background-image: url('assets/fondo-estrellas.jpg'); */
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: var(--text-light);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+function normalizeName(name) {
+	return name.trim().replace(/\s+/g, ' ').toLocaleLowerCase();
+}
 
-        /* Contenedor principal con efecto de cristal translúcido */
-        .welcome-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 40px 30px;
-            border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            max-width: 550px;
-            width: 100%;
-            text-align: center;
-            box-sizing: border-box;
-        }
+function isExistingName(name) {
+	return voterNames.has(normalizeName(name));
+}
 
-        /* Iconos decorativos flotantes superiores */
-        .decorations {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            letter-spacing: 10px;
-        }
+function updateDuplicateState() {
+	const name = nameInput.value;
+	const duplicate = isExistingName(name);
+	submitButton.disabled = duplicate;
+	if (duplicate) {
+		formMessage.textContent = 'Este nombre ya registró un voto.';
+	} else if (formMessage.textContent === 'Este nombre ya registró un voto.') {
+		formMessage.textContent = '';
+	}
+}
 
-        h1 {
-            font-size: 2.2rem;
-            margin-top: 0;
-            margin-bottom: 15px;
-            background: linear-gradient(45deg, var(--blue-pastel), var(--pink-pastel));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 700;
-        }
+function renderResults(votes) {
+	currentVotes = { M: Number(votes.M) || 0, F: Number(votes.F) || 0 };
+	const total = currentVotes.M + currentVotes.F;
+	const girlPercent = total ? Math.round((currentVotes.F / total) * 100) : 0;
+	const boyPercent = total ? 100 - girlPercent : 0;
 
-        /* Contenedor multimedia ajustable para Video o Imagen de bienvenida */
-        .media-container {
-            width: 100%;
-            border-radius: 16px;
-            overflow: hidden;
-            margin: 25px 0;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-            background-color: rgba(0, 0, 0, 0.2);
-        }
+	document.getElementById('total-votes').textContent = `${total} ${total === 1 ? 'voto' : 'votos'}`;
+	document.getElementById('girl-percent').textContent = `${girlPercent}%`;
+	document.getElementById('boy-percent').textContent = `${boyPercent}%`;
+	document.getElementById('girl-bar').style.width = `${girlPercent}%`;
+	document.getElementById('boy-bar').style.width = `${boyPercent}%`;
+}
 
-        .media-container video {
-            width: 100%;
-            display: block;
-        }
+function showFinalGirlReveal() {
+	if (finalRevealShown) return;
+	finalRevealShown = true;
 
-        /* Texto de agradecimiento */
-        .message-text {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #e0e0e0;
-            margin-bottom: 35px;
-        }
+	const predictionsSaidGirl = currentVotes.F > currentVotes.M;
+	const overlay = document.createElement('div');
+	overlay.className = 'final-girl-reveal';
+	overlay.setAttribute('role', 'dialog');
+	overlay.setAttribute('aria-label', 'Revelación final');
+	overlay.innerHTML = `
+		<div class="final-girl-card">
+			<div class="final-girl-icon" aria-hidden="true">🎀</div>
+			<h2>${predictionsSaidGirl ? '¡Las predicciones acertaron!' : '¡La gran sorpresa!'}</h2>
+			<p>${predictionsSaidGirl ? 'La mayoría predijo niña.' : 'Las predicciones no lo esperaban...'}</p>
+			<strong>¡GANÓ NIÑA! 💗</strong>
+			<div class="pink-hearts" aria-hidden="true">♥ ♥ ♥ ♥ ♥</div>
+		</div>
+	`;
 
-        .message-text p {
-            margin: 10px 0;
-        }
+	if (!document.getElementById('final-girl-reveal-styles')) {
+		const styles = document.createElement('style');
+		styles.id = 'final-girl-reveal-styles';
+		styles.textContent = `
+			.final-girl-reveal {
+				position: fixed;
+				inset: 0;
+				z-index: 9999;
+				display: grid;
+				place-items: center;
+				padding: 22px;
+				background: rgba(255, 105, 170, .97);
+				opacity: 0;
+				transform: scale(.7);
+				transition: opacity .8s ease, transform .8s ease;
+			}
+			.final-girl-reveal.is-visible {
+				opacity: 1;
+				transform: scale(1);
+				animation: final-girl-pulse 1.8s infinite alternate;
+			}
+			.final-girl-card {
+				width: min(100%, 680px);
+				padding: 55px 25px;
+				text-align: center;
+				color: #fff;
+				border: 5px solid #fff;
+				border-radius: 35px;
+				background: linear-gradient(145deg, #ffafd0, #e9368c);
+				box-shadow: 0 0 70px rgba(255, 255, 255, .9);
+			}
+			.final-girl-icon {
+				font-size: 80px;
+				animation: final-girl-bounce 1s infinite alternate;
+			}
+			.final-girl-card h2 {
+				margin: 15px 0;
+				font-size: clamp(1.8rem, 5vw, 3.5rem);
+			}
+			.final-girl-card p {
+				font-size: 1.25rem;
+			}
+			.final-girl-card strong {
+				display: block;
+				margin-top: 25px;
+				font-size: clamp(2.3rem, 8vw, 5rem);
+				text-shadow: 3px 3px #a91e61;
+			}
+			.pink-hearts {
+				margin-top: 25px;
+				font-size: 2rem;
+				letter-spacing: 12px;
+				animation: final-heart-float 1.2s infinite alternate;
+			}
+			@keyframes final-girl-pulse {
+				to { box-shadow: inset 0 0 120px rgba(255, 255, 255, .4); }
+			}
+			@keyframes final-girl-bounce {
+				to { transform: translateY(-18px) rotate(8deg); }
+			}
+			@keyframes final-heart-float {
+				to { transform: scale(1.2); }
+			}
+			@media (prefers-reduced-motion: reduce) {
+				.final-girl-reveal,
+				.final-girl-reveal.is-visible,
+				.final-girl-icon,
+				.pink-hearts { animation: none; transition: none; }
+			}
+		`;
+		document.head.appendChild(styles);
+	}
 
-        .highlight {
-            color: var(--gold-star);
-            font-weight: bold;
-        }
+	document.body.appendChild(overlay);
+	document.body.classList.add('reveal-open');
+	requestAnimationFrame(() => overlay.classList.add('is-visible'));
+}
 
-        /* Botón de acción interactivo hacia la página principal */
-        .enter-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #a2d2ff, #ffafcc);
-            color: #2b2d42;
-            text-decoration: none;
-            padding: 16px 40px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border-radius: 50px;
-            box-shadow: 0 5px 15px rgba(255, 175, 204, 0.4);
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+function showCelebration() {
+	if (celebrationShown) return;
+	celebrationShown = true;
+	const title = document.getElementById('winner-title');
+	const subtitle = document.getElementById('winner-subtitle');
+	const celebration = document.getElementById('celebration');
+	const confetti = document.getElementById('confetti');
+	const winner = currentVotes.M > currentVotes.F ? 'niño' : currentVotes.F > currentVotes.M ? 'niña' : 'empate';
 
-        .enter-btn:hover {
-            transform: translateY(-3px) scale(1.03);
-            box-shadow: 0 8px 25px rgba(162, 210, 255, 0.6);
-        }
+	title.textContent = winner === 'empate' ? '¡Hay empate!' : `¡Ganó ${winner}!`;
+	subtitle.textContent = winner === 'empate'
+		? `Niño y niña tienen ${currentVotes.M} voto${currentVotes.M === 1 ? '' : 's'} cada uno.`
+		: `La opción ${winner} obtuvo ${Math.max(currentVotes.M, currentVotes.F)} votos.`;
 
-        .enter-btn:active {
-            transform: translateY(-1px);
-        }
-    </style>
-</head>
-<body>
+	for (let index = 0; index < 70; index += 1) {
+		const piece = document.createElement('span');
+		piece.className = 'confetti-piece';
+		piece.style.left = `${Math.random() * 100}%`;
+		piece.style.backgroundColor = ['#df9eaa', '#88b7c9', '#c79752', '#fff6dc'][index % 4];
+		piece.style.setProperty('--drift', `${(Math.random() - 0.5) * 260}px`);
+		piece.style.animationDelay = `${Math.random() * 900}ms`;
+		confetti.appendChild(piece);
+	}
 
-    <div class="welcome-card">
-        <!-- Decoración mágica superior -->
-        <div class="decorations">✨👶✨</div>
-        
-        <h1>¡Bienvenidos a Nuestra Ilusión!</h1>
+	celebration.classList.add('is-visible');
+	celebration.setAttribute('aria-hidden', 'false');
+	document.body.classList.add('reveal-open');
+	submitButton.disabled = true;
+	nameInput.disabled = true;
+	voteForm.querySelectorAll('input[name="prediction"]').forEach(input => { input.disabled = true; });
+	window.setTimeout(showFinalGirlReveal, 5000);
+}
 
-        <!-- SECCIÓN MULTIMEDIA: Puedes usar un video o reemplazarlo por una foto linda de los futuros papás -->
-        <div class="media-container">
-            <!-- Si tienes un video, guarda tu archivo en la carpeta assets con el nombre video-bienvenida.mp4 -->
-            <video autoplay muted loop playsinline>
-                <source src="assets/video-bienvenida.mp4" type="video/mp4">
-                Tu navegador no soporta la reproducción de videos. Puedes colocar una foto en su lugar.
-            </video>
-        </div>
+async function loadResults() {
+	if (!GOOGLE_SCRIPT_URL.startsWith('https://script.google.com/')) {
+		formMessage.textContent = 'Falta configurar la conexión con Google Sheets.';
+		return;
+	}
 
-        <!-- Palabras de bienvenida y agradecimiento -->
-        <div class="message-text">
-            <p>Querida familia y amigos,</p>
-            <p>Estamos inmensamente felices de que nos acompañen en este momento tan mágico de nuestras vidas. Cada paso en este viaje ha estado lleno de amor, y hoy queremos que formen parte del secreto mejor guardado.</p>
-            <p class="highlight">Gracias por estar aquí y compartir nuestra alegría.</p>
-        </div>
+	try {
+		const response = await fetch(GOOGLE_SCRIPT_URL);
+		if (!response.ok) throw new Error('No se pudieron cargar los resultados.');
+		const result = await response.json();
+		voterNames = new Set((result.names || []).map(normalizeName));
+		renderResults(result.votes);
+		updateDuplicateState();
+		if (window.revealReached) showCelebration();
+	} catch (error) {
+		formMessage.textContent = 'No se pudieron cargar los resultados. Intenta de nuevo.';
+	}
+}
 
-        <!-- Enlace directo a la siguiente pantalla (principal.html) -->
-        <a href="principal.html" class="enter-btn">Entrar a la Experiencia</a>
-    </div>
+voteForm.addEventListener('submit', async (event) => {
+	event.preventDefault();
+	const formData = new FormData(voteForm);
+	const voterName = String(formData.get('voterName') || '').trim();
+	const selected = formData.get('prediction');
 
-</body>
-</html>
+	if (!voterName || !selected) {
+		formMessage.textContent = 'Escribe tu nombre y elige niño o niña para votar.';
+		return;
+	}
+
+	if (isExistingName(voterName)) {
+		updateDuplicateState();
+		return;
+	}
+
+	if (!GOOGLE_SCRIPT_URL.startsWith('https://script.google.com/')) {
+		formMessage.textContent = 'Falta configurar la conexión con Google Sheets.';
+		return;
+	}
+
+	submitButton.disabled = true;
+	submitButton.textContent = 'Guardando...';
+	try {
+		const response = await fetch(GOOGLE_SCRIPT_URL, {
+			method: 'POST',
+			body: JSON.stringify({ name: voterName, vote: selected === 'niño' ? 'M' : 'F' })
+		});
+		const result = await response.json();
+		if (!response.ok || !result.success) {
+			if (result.duplicate) {
+				voterNames.add(normalizeName(voterName));
+				updateDuplicateState();
+				return;
+			}
+			throw new Error(result.error || 'No se pudo guardar el voto.');
+		}
+		formMessage.textContent = '¡Tu voto quedó guardado en la lista!';
+		voterNames = new Set((result.names || []).map(normalizeName));
+		voteForm.reset();
+		renderResults(result.votes);
+		if (window.revealReached) showCelebration();
+	} catch (error) {
+		formMessage.textContent = 'No se pudo guardar el voto. Intenta de nuevo.';
+	} finally {
+		submitButton.disabled = isExistingName(nameInput.value) || window.revealReached;
+		submitButton.innerHTML = 'Guardar mi voto <span aria-hidden="true">→</span>';
+	}
+});
+
+nameInput.addEventListener('input', updateDuplicateState);
+document.addEventListener('reveal:now', showCelebration);
+document.getElementById('close-celebration').addEventListener('click', () => {
+	document.getElementById('celebration').classList.remove('is-visible');
+	document.getElementById('celebration').setAttribute('aria-hidden', 'true');
+	document.body.classList.remove('reveal-open');
+});
+loadResults();

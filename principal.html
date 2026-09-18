@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="description" content="Vota si la gran revelación será niño o niña.">
+	<title>¿Niño o niña? | La gran revelación</title>
+	<link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+	<main class="page-shell">
+		<section class="reveal-card" aria-labelledby="page-title">
+			<div class="top-mark" aria-hidden="true">
+				<span>✦</span>
+				<span class="tiny-star">✧</span>
+				<span>✦</span>
+			</div>
+
+			<p class="eyebrow">La cuenta regresiva comenzó</p>
+			<h1 id="page-title">¿Será niño o niña?</h1>
+			<p class="intro">Acompáñanos en esta dulce espera y déjanos tu predicción antes de conocer la gran noticia.</p>
+
+			<div class="countdown-panel" aria-live="polite">
+				<p class="countdown-label">Faltan para la revelación</p>
+				<div class="countdown" id="countdown">
+					<div class="time-unit"><strong id="days">00</strong><span>días</span></div>
+					<div class="time-unit"><strong id="hours">00</strong><span>horas</span></div>
+					<div class="time-unit"><strong id="minutes">00</strong><span>minutos</span></div>
+					<div class="time-unit"><strong id="seconds">00</strong><span>segundos</span></div>
+				</div>
+				<p class="event-date">Hoy · 9:25 p. m.</p>
+			</div>
+
+			<section class="vote-section" aria-labelledby="vote-title">
+				<h2 id="vote-title">Haz tu apuesta</h2>
+				<p class="vote-note">Elige una opción y descubre cómo va la votación.</p>
+
+				<form id="vote-form" class="vote-form">
+					<label class="name-field" for="voter-name">Tu nombre</label>
+					<input class="name-input" id="voter-name" name="voterName" type="text" maxlength="80" autocomplete="name" placeholder="Escribe tu nombre" required>
+					<div class="options">
+						<label class="vote-option vote-option--pink">
+							<input type="radio" name="prediction" value="niña">
+							<span class="option-art" aria-hidden="true">♀</span>
+							<span class="option-name">Niña</span>
+							<span class="option-caption">Una pequeña princesa</span>
+						</label>
+						<label class="vote-option vote-option--blue">
+							<input type="radio" name="prediction" value="niño">
+							<span class="option-art" aria-hidden="true">♂</span>
+							<span class="option-name">Niño</span>
+							<span class="option-caption">Un pequeño príncipe</span>
+						</label>
+					</div>
+					<button class="vote-button" type="submit">Guardar mi voto <span aria-hidden="true">→</span></button>
+					<p class="form-message" id="form-message" role="status"></p>
+				</form>
+
+				<div class="results" aria-label="Resultados de la votación">
+					<div class="result-heading"><span>Así va la ilusión</span><span id="total-votes">0 votos</span></div>
+					<div class="result-row">
+						<span>Niña</span><strong id="girl-percent">0%</strong>
+						<div class="progress-track"><span id="girl-bar" class="progress-bar progress-bar--pink"></span></div>
+					</div>
+					<div class="result-row">
+						<span>Niño</span><strong id="boy-percent">0%</strong>
+						<div class="progress-track"><span id="boy-bar" class="progress-bar progress-bar--blue"></span></div>
+					</div>
+				</div>
+			</section>
+
+			<p class="closing-note">Gracias por compartir esta emoción con nosotros <span aria-hidden="true">♡</span></p>
+		</section>
+	</main>
+		<div class="celebration" id="celebration" aria-hidden="true">
+			<div class="confetti" id="confetti" aria-hidden="true"></div>
+			<div class="celebration-content" role="dialog" aria-labelledby="winner-title">
+				<p class="celebration-kicker">La gran revelación</p>
+				<h2 id="winner-title">¡Ganó!</h2>
+				<p id="winner-subtitle">Gracias por compartir este momento.</p>
+				<button class="close-celebration" id="close-celebration" type="button">Ver los resultados</button>
+			</div>
+		</div>
+	<script src="js/contador.js"></script>
+	<script src="js/votos.js"></script>
+</body>
+</html>
