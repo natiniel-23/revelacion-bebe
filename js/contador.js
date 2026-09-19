@@ -1,4 +1,4 @@
-const revealDate = new Date(2026, 8, 17, 22, 0, 0);
+const revealDate = new Date(2026, 8, 19, 11,35, 0);
 window.revealDate = revealDate;
 window.revealReached = false;
 
