@@ -54,7 +54,7 @@ function showFinalGirlReveal() {
 			<div class="final-girl-icon" aria-hidden="true">🎀</div>
 			<h2>${predictionsSaidGirl ? '¡Las predicciones acertaron!' : '¡La gran sorpresa!'}</h2>
 			<p>${predictionsSaidGirl ? 'La mayoría predijo niña.' : 'Las predicciones no lo esperaban...'}</p>
-			<strong>¡GANÓ NIÑA! 💗</strong>
+			<strong>¡ES UNA NIÑA! 💗</strong>
 			<div class="pink-hearts" aria-hidden="true">♥ ♥ ♥ ♥ ♥</div>
 		</div>
 	`;
